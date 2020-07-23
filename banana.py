@@ -1,28 +1,8 @@
+import math
+
 def inLoop(a, b):
-    aCopy, bCopy = a, b
-    steps = []
-
-    if(a == b):
-        return False
-
-    while a != b:
-        steps.append([a,b])
-        if(a < b):
-            b -= a
-            a += a
-        elif(a > b):
-            a -= b
-            b += b
-
-        if([a,b] in steps):
-            return True
-            break
-
-        if((a, b) == (aCopy, bCopy)):
-            return True
-            break
-
-    return False
+    powerOfTwo = int((a + b)/math.gcd(a, b))
+    return bool(powerOfTwo & (powerOfTwo - 1))
 
 def remove(guards, ref):
     for a in range(len(guards)):
@@ -44,20 +24,21 @@ def solution(banana_list):
             return 0
         else:
             return 2
-    
-    for guardOne in range(len(guards)):
-        for guardTwo in range(len(guards)):
-            if(inLoop(guardOne, guardTwo)):
+
+    for guardOne, a in enumerate(banana_list):
+        for guardTwo, b in enumerate(banana_list):
+            if(guardOne != guardTwo and inLoop(a, b)):
                 guards[guardOne].append(guardTwo)
     
     leftToProcess = len(banana_list)
     while leftToProcess > 0:
         minGuards = 0
 
-        sortedGuards = sorted(guards, key=len)
-        minGuards = guards.index(sortedGuards[0])
-
-        ### ???
+        for a in range(len(guards)):
+            if(a!=0 and (len(guards[a])<len(guards[minGuards]) or guards[minGuards]
+                == [-1]) and guards[a]!=[-1]):
+                minGuards=a
+        
         if((len(guards[minGuards])) == 0 or (len(guards[minGuards])==1 and
                 guards[minGuards][0] == guards[minGuards]) and guards[minGuards] !=
                 [-1]):
@@ -71,9 +52,8 @@ def solution(banana_list):
                     min_node=guards[minGuards][i]
             if(guards[min_node]!=[-1]):
                 remove(guards, minGuards)
-                remove(guards, minGuards)
+                remove(guards, min_node)
                 leftToProcess-=2
-        ### ??? write out on paper
 
     return workingGuards
 
