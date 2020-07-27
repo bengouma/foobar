@@ -1,59 +1,59 @@
 import math
 
+class guardNode:
+    def __init__(self, bananas):
+        self.bananas = bananas
+        self.loop = []
+        self.discard = []
+
 def inLoop(a, b):
     powerOfTwo = int((a + b)/math.gcd(a, b))
     return bool(powerOfTwo & (powerOfTwo - 1))
 
-def remove(guards, ref):
-    for a in range(len(guards)):
-        b = 0 
-        while b < len(guards[a]):
-            if(guards[a][b]==ref):
-                guards[a].pop(b)
-            b+=1 
-    guards[ref]=[-1]
+def disconnect(nodeList,node):
+    for n in node.discard:
+        n.discard.remove(node)
+    for n in node.loop:
+        n.loop.remove(node)
+    nodeList.remove(node)
+
+def removePair(nodeList,node1,node2):
+    disconnect(nodeList,node1)
+    disconnect(nodeList,node2)
 
 def solution(banana_list):
-    guards = [[] for x in range(len(banana_list))]
+    guards = [guardNode(banana_list[a]) for a in range(len(banana_list))]
     workingGuards = 0
 
-    if(len(banana_list) == 2 and banana_list[0] == banana_list[1]):
-        return 2
-    elif(len(banana_list) == 2):
-        if(inLoop(banana_list[0], banana_list[1])):
-            return 0
-        else:
-            return 2
+    for a in range(0, len(banana_list) - 1):
+        for b in range(a + 1, len(banana_list)):
+            if(inLoop(banana_list[a], banana_list[b])):
+                guards[a].loop.append(guards[b])
+                guards[b].loop.append(guards[a])
+            else:
+                guards[a].discard.append(guards[b])
+                guards[b].discard.append(guards[a])
 
-    for guardOne, a in enumerate(banana_list):
-        for guardTwo, b in enumerate(banana_list):
-            if(guardOne != guardTwo and inLoop(a, b)):
-                guards[guardOne].append(guardTwo)
-    
-    leftToProcess = len(banana_list)
-    while leftToProcess > 0:
-        minGuards = 0
+    if(len(banana_list)%2==1):
+        single=guardNode(-1)
+        for guard in guards:
+            single.discard.append(guard)
+            guard.discard.append(single)
+        guards.append(single)
+        workingGuards-=1
 
-        for a in range(len(guards)):
-            if(a!=0 and (len(guards[a])<len(guards[minGuards]) or guards[minGuards]
-                == [-1]) and guards[a]!=[-1]):
-                minGuards=a
-        
-        if((len(guards[minGuards])) == 0 or (len(guards[minGuards])==1 and
-                guards[minGuards][0] == guards[minGuards]) and guards[minGuards] !=
-                [-1]):
-            remove(guards, minGuards)
-            leftToProcess-=1
-            workingGuards+=1
-        else:
-            min_node=guards[minGuards][0]
-            for i in range(len(guards[minGuards])):
-                if(i!=0 and guards[minGuards][i]!=minGuards and len(guards[guards[minGuards][i]])<len(guards[min_node])):
-                    min_node=guards[minGuards][i]
-            if(guards[min_node]!=[-1]):
-                remove(guards, minGuards)
-                remove(guards, min_node)
-                leftToProcess-=2
+    while len(guards) > 0:
+        guards.sort(key = lambda x: len(x.discard), reverse = True)
+        currentGuard = guards[0]
+        good = False
+        for pair in guards[1:]:
+            if(pair in currentGuard.loop):
+                removePair(guards, currentGuard, pair)
+                good = True
+                break
+        if not good:
+            workingGuards += 2
+            removePair(guards, currentGuard, guards[1])
 
     return workingGuards
 
