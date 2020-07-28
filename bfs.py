@@ -82,8 +82,6 @@ def solution(src, dest):
     visited = [[False for i in range(boardSize + 1)] for j in range(boardSize + 1)]
     visited[startx][starty] = True
 
-    #print(destx, desty)
-
     while(len(queue) > 0): 
 
         piece = queue[0] 
@@ -103,12 +101,10 @@ def solution(src, dest):
             if(onBoard(x, y, boardSize) and not visited[x][y]): 
                 visited[x][y] = True
                 queue.append(knight(x, y, piece.dist + 1)) 
-                #print(x,y)
             else:
                 pass
 
     if(piece.x is not destx or piece.y is not desty):
-        #print(piece.x, piece.y)
         return piece.dist
 
 solution(0, 62)
