@@ -1,3 +1,19 @@
+import collections
+
+def locationOfItems(listItem, item):
+    startNum = -1
+    location = []
+    while True:
+        try:
+            loc = listItem.index(item, startNum + 1)
+        except ValueError:
+            break
+        else:
+            location.append(loc)
+            startNum = loc
+    
+    return location
+
 def solution(time, time_limit):
     savedBunnies = []
     closed = False
@@ -30,10 +46,12 @@ def solution(time, time_limit):
 
     return savedBunnies
 
-print(solution([[0, 2, 2, 2, -1], 
-                            [9, 0, 2, 2, -1], 
-                            [9, 3, 0, 2, -1], 
-                            [9, 3, 2, 0, -1], 
-                            [9, 3, 2, 2, 0]], 1))
+# print(solution([[0, 2, 2, 2, -1], 
+#                             [9, 0, 2, 2, -1], 
+#                             [9, 3, 0, 2, -1], 
+#                             [9, 3, 2, 0, -1], 
+#                             [9, 3, 2, 2, 0]], 1))
 
+
+print(locationOfItems([0, 2, 2, 2, -1], -1))
 # [[0, 1, 1, 1, 1], [1, 0, 1, 1, 1], [1, 1, 0, 1, 1], [1, 1, 1, 0, 1], [1, 1, 1, 1, 0]], 3
