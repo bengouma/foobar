@@ -39,7 +39,6 @@ def terminalStateFilter(matrix):
 
     return terminalStates
 
-
 def probDistributionVector(matrix, row, timesteps):
     vector = matrix[row]
     for i in range(timesteps):
@@ -48,12 +47,6 @@ def probDistributionVector(matrix, row, timesteps):
         vector = newVector
 
     return vector
-
-def gcd(a, b):
-
-    while b:
-        a, b = b, a%b
-    return a
 
 def solution(m):
 
@@ -73,7 +66,6 @@ def solution(m):
     for i in probVector:
         denominatorNum = fractions.Fraction(str(i)).limit_denominator().denominator
         denominators.append(denominatorNum)
-
 
     factors = [max(denominators) // x for x in denominators]
     numeratorsTimesFactors = [a * b for a, b in zip(numerators, factors)]
@@ -99,16 +91,3 @@ print(solution([
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]))
-
-# [
-#     [0, 7, 0, 17, 0, 1, 0, 5, 0, 2],
-#     [0, 0, 29, 0, 28, 0, 3, 0, 16, 0],
-#     [0, 3, 0, 0, 0, 1, 0, 0, 0, 0],
-#     [48, 0, 3, 0, 0, 0, 17, 0, 0, 0],
-#     [0, 6, 0, 0, 0, 1, 0, 0, 0, 0],
-#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-# ]

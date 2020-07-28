@@ -12,4 +12,3 @@ def solution(n):
     return ways[n][n] - 1
 
 print(solution(200))
-# expected output: 487067745
