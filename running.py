@@ -1,59 +1,69 @@
-import collections
+from itertools import permutations
 
-def locationOfItems(listItem, item):
-    startNum = -1
-    location = []
-    while True:
-        try:
-            loc = listItem.index(item, startNum + 1)
-        except ValueError:
-            break
-        else:
-            location.append(loc)
-            startNum = loc
-    
-    return location
+def powerset(listItem):
+    x = len(listItem)
+    masks = [1 << i for i in range(x)]
+    for i in range(1 << x):
+        yield [ss for mask, ss in zip(masks, listItem) if i & mask]
 
-def solution(time, time_limit):
+def floyd(times):
+    for k in range(len(times)):
+        for i in range(len(times)):
+            for j in range(len(times)):
+                times[i][j] = min(times[i][j], times[i][k] + times[k][j])
+
+    return times
+
+def solution(times, time_limit):
+    numOfBunnies = len(times) - 2
+    ids = []
     savedBunnies = []
-    closed = False
-    start = 0
 
-    while closed == False:
-        currentPos = time[start]
-        
-        if(time_limit < 0):
-            closed = True
+    if(len(times) <= 2):
+        return []
 
-        if(min(currentPos) == 0):
-            currentPosTemp = sorted(currentPos)
-            delta = currentPosTemp[1]
-            nextPos = time[currentPos.index(currentPosTemp[1])]
-            if(time.index(nextPos) - 1 in savedBunnies):
-                nextPos = time[locationOfItems(currentPos, time.index(nextPos))[1]]
-            start = time.index(nextPos)
+    for item in range(numOfBunnies):
+        ids.append(item)
 
-        else:
-            delta = min(currentPos)
-            nextPos = time[currentPos.index(min(currentPos))]
-            if(time.index(nextPos) - 1 in savedBunnies):
-                nextPos = time[locationOfItems(currentPos, time.index(nextPos))[1]]
-            start = time.index(nextPos)
+    pset = powerset(ids)
+    pset = sorted(pset)
+    
+    spaths = floyd(times)
+
+    for item in times:
+        if(times[item][item] < 0):
+            return [num for num in range(0, len(times) - 2)]
+
+    for sub in pset:
+        for permutation in permutations(sub):
+            subsum = 0
+            prev = 0
+            nextItem = len(times) - 1
             
-        if(currentPos != time[0] and currentPos != time[len(time) - 1]):
-            savedBunnies.append(time.index(currentPos) - 1)
+            for idNum in permutation:
+                nextItem = idNum + 1
+                subsum += spaths[prev][nextItem]
+                prev = nextItem
 
-        time_limit -= delta
-        
-        if(len(savedBunnies) == len(time) - 2):
-            break
+            subsum += spaths[prev][len(times) - 1]
 
+            if(subsum <= time_limit and len(sub) > len(savedBunnies)):
+                savedBunnies = sub
+                if(len(savedBunnies) == numOfBunnies):
+                    break
+            else:
+                pass
+            
     return savedBunnies
 
-# print(solution([[0, 1, 1, 1, 1], [1, 0, 1, 1, 1], [1, 1, 0, 1, 1], [1, 1, 1, 0, 1], [1, 1, 1, 1, 0]], 3))
+# print(solution([[0, 1, 1, 1, 1], 
+#                             [1, 0, 1, 1, 1], 
+#                             [1, 1, 0, 1, 1], 
+#                             [1, 1, 1, 0, 1], 
+#                             [1, 1, 1, 1, 0]], 3))
 
-print(solution([[0, 2, 2, 2, -1], 
-                            [9, 0, 2, 2, -1], 
-                            [9, 3, 0, 2, -1], 
-                            [9, 3, 2, 0, -1], 
-                            [9, 3, 2, 2, 0]], 1))
+# print(solution ([[0, 2, 2, 2, -1], 
+#                             [9, 0, 2, 2, -1], 
+#                             [9, 3, 0, 2, -1], 
+#                             [9, 3, 2, 0, -1], 
+#                             [9, 3, 2, 2, 0]], 1))
