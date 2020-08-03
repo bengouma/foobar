@@ -5,13 +5,13 @@ My solutions for Google's Fooboar hidden recruitment challenge.
 Note: I forgot to save my solution for stage 1
 
 ## Files for Stage Two
-1. bfs.py
+1. bfs.py (Don't Get Volunteered)
 1. idloop.py
 
 ## Files for Stage Three
-1. markov.py(Doomsday Fuel)
+1. markov.py (Doomsday Fuel)
 1. bombs.py (Bombs, baby)
-1. stairs.py
+1. stairs.py (The Grandest Staircase Of Them All)
 
 ## Files for Stage Four
 1. banana.py (Distract the Guards)
